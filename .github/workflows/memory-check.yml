@@ -27,4 +27,6 @@ jobs:
         run: python3 scripts/build_memory_index.py --check
 
       - name: Check sync script syntax
-        run: sh -n scripts/memory-sync.sh
+        run: |
+          sh -n scripts/memory-sync.sh
+          sh -n scripts/install-agent-skills.sh

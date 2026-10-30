@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## Unreleased
+
+- Added an idempotent Agent Skill installer for Codex, Claude Code, and generic agents.
+- Added symlink-based installation, managed global instruction blocks, dry-run, uninstall, and conflict protection.
+
 ## 0.1.0 - 2026-10-30
 
 - Initial public framework extracted from a private production workflow.

@@ -76,16 +76,13 @@ Then complete the setup end to end:
    python3 -m unittest discover -s tests -v
    python3 scripts/build_memory_index.py --check
    sh scripts/memory-sync.sh
-6. Enable the bundled skills by adding this idempotent block to the global instructions used by your agent platform, such as ~/.codex/AGENTS.md, ~/.claude/CLAUDE.md, or the equivalent:
+6. Install and enable the bundled skills with the repository installer. Choose the mode that matches the platform you are running on:
+   sh "<absolute-clone-path>/scripts/install-agent-skills.sh" --agent codex
 
-   <!-- open-long-term-memory:begin -->
-   Long-term memory:
-   - Before recalling durable facts, read <absolute-clone-path>/skills/recall-long-term-memory/SKILL.md.
-   - Before saving a durable fact, read <absolute-clone-path>/skills/write-long-term-memory/SKILL.md.
-   - Before either operation, run `sh <absolute-clone-path>/scripts/memory-sync.sh`.
-   <!-- open-long-term-memory:end -->
+   Use --agent claude for Claude Code. For another platform, use:
+   sh "<absolute-clone-path>/scripts/install-agent-skills.sh" --agent generic --skills-dir <skills-dir> --instructions-file <agent-instructions-file>
 
-   If your platform has no global instruction mechanism, print this block and tell me exactly where to install it.
+   The installer creates symlinks to this clone and maintains an idempotent instruction block. If it refuses because a path already exists, stop and ask me instead of overwriting it.
 7. If the repository is public, warn me that generated indexes can expose personal data, and help me move the real memory store to a private repository before writing any personal fact.
 8. Finish by reporting the repository URL, local path, branch and commit, test and sync results, whether the hook and skills are enabled, and ask me for one recall test.
 
@@ -94,7 +91,33 @@ Never print secrets, never force-push, and never invent a repository URL.
 
 ## Connect an agent
 
-Keep this repository as a separate clone. Add a pointer in the agent's global instructions, using the actual local clone path:
+### Automatic install
+
+Keep this repository as a separate clone, then run the installer for your agent platform:
+
+```bash
+# Codex
+sh scripts/install-agent-skills.sh --agent codex
+
+# Claude Code
+sh scripts/install-agent-skills.sh --agent claude
+
+# Other agents
+sh scripts/install-agent-skills.sh \
+  --agent generic \
+  --skills-dir <skills-dir> \
+  --instructions-file <agent-instructions-file>
+
+# Inspect first, or remove managed links later
+sh scripts/install-agent-skills.sh --agent codex --dry-run
+sh scripts/install-agent-skills.sh --agent codex --uninstall
+```
+
+The default installation creates symlinks, so updates from `git pull` reach both the Skill files and the global instruction pointer without maintaining a second copy. The installer refuses to overwrite unrelated files, directories, or symlinks.
+
+### Manual fallback
+
+If your platform cannot use the installer, add a pointer to the agent's global instructions using the actual local clone path:
 
 ```text
 Long-term memory:
@@ -103,7 +126,7 @@ Long-term memory:
 - Before either operation, run `sh <clone>/scripts/memory-sync.sh`.
 ```
 
-This keeps instructions in the repository. Updating memory workflows is then a normal `git pull`, with no second copy to maintain.
+The manual pointer has the same single-source-of-truth benefit; most users should prefer the installer because it also registers the Skill directories.
 
 More detail: [Agent integration](docs/agent-integration.md).
 
@@ -143,7 +166,7 @@ The `pre-commit` hook rebuilds generated files whenever memory changes are commi
 | `open-loops/` | Unfinished work with explicit close conditions |
 | `moc/` | Generated maps of content |
 | `skills/` | Agent workflows for recall and write |
-| `scripts/` | Index generation and multi-host synchronization |
+| `scripts/` | Index generation, multi-host synchronization, and Agent Skill installation |
 | `templates/` | Copyable frontmatter templates |
 | `tests/` | Standard-library test suite |
 | `INDEX.md` | Generated top-level index |

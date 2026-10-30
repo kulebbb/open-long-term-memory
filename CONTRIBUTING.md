@@ -17,6 +17,7 @@ git config core.hooksPath .githooks
 python3 -m unittest discover -s tests -v
 python3 scripts/build_memory_index.py --check
 sh -n scripts/memory-sync.sh
+sh -n scripts/install-agent-skills.sh
 ```
 
 The pre-commit hook also rejects a commit when memory files are modified but not staged, because the generated index is built from the worktree.

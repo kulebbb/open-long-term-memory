@@ -76,16 +76,13 @@ python3 scripts/build_memory_index.py --check
    python3 -m unittest discover -s tests -v
    python3 scripts/build_memory_index.py --check
    sh scripts/memory-sync.sh
-6. 在 Agent 平台使用的全局指令文件中追加以下幂等块，例如 ~/.codex/AGENTS.md、~/.claude/CLAUDE.md 或同类文件，以启用内置 Skills：
+6. 使用仓库安装器自动安装并启用 Skills。根据你当前运行的 Agent 平台选择命令：
+   sh "<绝对克隆路径>/scripts/install-agent-skills.sh" --agent codex
 
-   <!-- open-long-term-memory:begin -->
-   长期记忆：
-   - 召回持久事实前，读取 <绝对克隆路径>/skills/recall-long-term-memory/SKILL.md。
-   - 保存持久事实前，读取 <绝对克隆路径>/skills/write-long-term-memory/SKILL.md。
-   - 两类操作前都先运行 `sh <绝对克隆路径>/scripts/memory-sync.sh`。
-   <!-- open-long-term-memory:end -->
+   Claude Code 使用 --agent claude；其他平台使用：
+   sh "<绝对克隆路径>/scripts/install-agent-skills.sh" --agent generic --skills-dir <skills目录> --instructions-file <Agent全局指令文件>
 
-   如果你的平台没有全局指令机制，打印这个块，并明确告诉我应该安装到哪里。
+   安装器会用 symlink 指向当前克隆，并维护幂等全局指令块。如果它因为路径已存在而拒绝执行，停下来问我，不要覆盖。
 7. 如果仓库是公开的，提醒我生成索引可能暴露个人数据，并在写入任何个人事实前帮我迁移到私有仓库。
 8. 安装完成后汇报：仓库 URL、本地路径、分支与 commit、测试和同步结果、hook 与 Skills 是否已启用，并让我提供一个召回测试。
 
@@ -94,7 +91,33 @@ python3 scripts/build_memory_index.py --check
 
 ## 接入 Agent
 
-将本仓库作为独立克隆保存，并在 Agent 的全局指令中加入指向实际克隆路径的说明：
+### 自动安装
+
+将本仓库作为独立克隆保存，然后根据 Agent 平台运行安装器：
+
+```bash
+# Codex
+sh scripts/install-agent-skills.sh --agent codex
+
+# Claude Code
+sh scripts/install-agent-skills.sh --agent claude
+
+# 其他 Agent
+sh scripts/install-agent-skills.sh \
+  --agent generic \
+  --skills-dir <skills目录> \
+  --instructions-file <Agent全局指令文件>
+
+# 预演，或后续卸载
+sh scripts/install-agent-skills.sh --agent codex --dry-run
+sh scripts/install-agent-skills.sh --agent codex --uninstall
+```
+
+默认安装使用 symlink，因此记忆仓库 `git pull` 后，Skill 文件和全局指令中的路径都会使用最新版本，不需要维护第二份副本。安装器不会覆盖无关文件、目录或符号链接。
+
+### 手动回退
+
+如果平台无法使用安装器，将以下说明加入 Agent 的全局指令，并替换为实际克隆路径：
 
 ```text
 长期记忆：
@@ -103,7 +126,7 @@ python3 scripts/build_memory_index.py --check
 - 两类操作前都先运行 `sh <clone>/scripts/memory-sync.sh`。
 ```
 
-这样 Skill 会随仓库一起更新，不需要在每台机器维护第二份规则副本。
+手动方式同样保持单一事实源；大多数用户应优先使用安装器，因为它会同时注册 Skills 目录。
 
 更多细节见 [Agent 接入说明](docs/agent-integration.md)。
 
@@ -143,7 +166,7 @@ python3 -m unittest discover -s tests -v
 | `open-loops/` | 未完成事项及明确的关闭条件 |
 | `moc/` | 自动生成的内容地图 |
 | `skills/` | Agent 召回与写入工作流 |
-| `scripts/` | 索引生成与多机同步 |
+| `scripts/` | 索引生成、多机同步与 Agent Skill 安装 |
 | `templates/` | 可复制的 frontmatter 模板 |
 | `tests/` | 标准库测试套件 |
 | `INDEX.md` | 自动生成的顶层索引 |
