@@ -1,0 +1,9 @@
+# Require the maintainer to review changes to the public framework.
+* @kulebbb
+
+# Keep workflow, installer, and memory rules behind owner review.
+/.github/ @kulebbb
+/scripts/ @kulebbb
+/skills/ @kulebbb
+/SCHEMA.md @kulebbb
+/SECURITY.md @kulebbb

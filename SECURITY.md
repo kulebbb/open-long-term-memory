@@ -21,3 +21,16 @@ Use a separate private repository for real memories. Generated indexes contain s
 ## Reporting a vulnerability
 
 Please use the repository's GitHub Security Advisory feature rather than a public issue. Include reproduction steps and the affected files or commands. Do not include live credentials in the report.
+
+## Repository controls
+
+The public repository is configured with:
+
+- Secret scanning and push protection.
+- Dependabot vulnerability alerts and automated security fixes.
+- Private vulnerability reporting.
+- CodeQL default setup for GitHub Actions and Python.
+- A protected `main` branch requiring a pull request, one approval, resolved conversations, and a passing `verify` check.
+- No force-push or branch deletion. Administrators retain an emergency bypass.
+- Read-only default `GITHUB_TOKEN` permissions.
+- GitHub-owned Actions only, pinned to full commit SHAs, with Dependabot updates.
