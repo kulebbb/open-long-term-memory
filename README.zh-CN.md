@@ -115,6 +115,8 @@ sh scripts/install-agent-skills.sh --agent codex --uninstall
 
 默认安装使用 symlink，因此记忆仓库 `git pull` 后，Skill 文件和全局指令中的路径都会使用最新版本，不需要维护第二份副本。安装器不会覆盖无关文件、目录或符号链接。
 
+安装器每台机器、每个 Agent 平台显式执行一次。后续 `git pull` 不需要重新执行，因为 symlink 和全局指令路径会继续指向更新后的克隆。只有克隆路径、Agent 平台、Skill 目录名或安装布局变化时才需要重跑。仓库不会通过 `post-merge` 或 `post-checkout` 钩子自动执行安装器。
+
 ### 手动回退
 
 如果平台无法使用安装器，将以下说明加入 Agent 的全局指令，并替换为实际克隆路径：

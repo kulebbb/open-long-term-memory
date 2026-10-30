@@ -22,6 +22,8 @@ sh scripts/install-agent-skills.sh \
 
 The installer symlinks both Skill directories into the platform's Skills directory and adds one managed pointer block to the global instruction file. It is idempotent, refuses to replace unrelated paths, and supports `--dry-run` and `--uninstall`.
 
+Run it once per machine and agent platform. A normal `git pull` updates the symlink targets in place, so the installer is not part of the pull workflow and no `post-merge` or `post-checkout` hook calls it. Re-run it only after changing the clone path, agent platform, Skill directory names, or installation layout.
+
 Restart the agent session after installation so the updated Skills and instructions are loaded.
 
 ## Minimal manual integration

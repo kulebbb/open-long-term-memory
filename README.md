@@ -115,6 +115,8 @@ sh scripts/install-agent-skills.sh --agent codex --uninstall
 
 The default installation creates symlinks, so updates from `git pull` reach both the Skill files and the global instruction pointer without maintaining a second copy. The installer refuses to overwrite unrelated files, directories, or symlinks.
 
+Run the installer once per machine and agent platform. Subsequent `git pull` operations do not need to run it again because the symlinks and instruction paths continue to point at the updated clone. Re-run it only when the clone path, agent platform, Skill directory names, or installation layout changes. No `post-merge` or `post-checkout` hook invokes the installer automatically.
+
 ### Manual fallback
 
 If your platform cannot use the installer, add a pointer to the agent's global instructions using the actual local clone path:
