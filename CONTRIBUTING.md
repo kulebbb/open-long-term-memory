@@ -26,6 +26,6 @@ The pre-commit hook also rejects a commit when memory files are modified but not
 
 Create a focused pull request into `main`. Describe the behavior change, the reason for it, and the checks performed. Keep changes focused. Include tests for index parsing, validation, relation handling, generated output, or synchronization behavior when applicable.
 
-`main` is protected: the PR needs one approval, resolved conversations, and a passing `verify` check. External contributors cannot push directly, force-push, or delete the branch.
+`main` is protected: the PR needs code-owner approval, resolved conversations, and passing `verify` and `CodeQL` checks. External contributors cannot push directly, force-push, or delete the branch.
 
 By contributing, you agree that your contribution is licensed under the repository's MIT License.
