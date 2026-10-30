@@ -1,5 +1,7 @@
 # Open Long-Term Memory
 
+English | [简体中文](README.zh-CN.md)
+
 Markdown-native long-term memory for AI agents.
 
 This project is a small, auditable framework for storing durable facts as plain Markdown files. It is designed for people and agents who want memory that is readable in any editor, versioned with Git, and usable from multiple machines without building a database or vector store.
