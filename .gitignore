@@ -1,0 +1,16 @@
+.DS_Store
+.obsidian/workspace*
+.obsidian/cache
+.env
+.env.*
+*.secret
+*.pem
+*.key
+__pycache__/
+*.py[cod]
+.coverage
+htmlcov/
+.venv/
+venv/
+.idea/
+.vscode/
