@@ -52,6 +52,46 @@ python3 scripts/build_memory_index.py --check
 
 仓库自带一组虚构的 `sample-app` 演示数据，确保所有索引页面都有可查看的内容。开始使用自己的记忆库时，替换或删除所有 `example-*` 记录即可。
 
+## 一条提示词让 Agent 安装并启用
+
+将下面整段复制给能够使用终端和编辑文件的 Agent。如果你没有在消息中提供 GitHub 仓库地址，Agent 必须先询问地址，不能直接安装或修改任何内容。
+
+```text
+你负责在我本机安装并启用 Open Long-Term Memory。
+
+开始前先确认我已经提供 GitHub 仓库地址。如果我没有提供，先停下来问我：
+- 我的长期记忆仓库完整 GitHub URL；真实个人记忆必须使用 private 仓库；
+- 本地安装路径，默认 ~/open-long-term-memory。
+
+如果我还没有创建仓库，引导我先在 GitHub 创建一个空的 private 仓库，再把完整地址发给你。使用我现有的 Git 或 GitHub 认证，不要让我在对话中粘贴访问令牌。
+
+确认后请完整执行以下安装流程：
+
+1. 检查 git、python3（3.9 或更高版本）和 POSIX 兼容的 sh 是否可用。
+2. 不得覆盖、删除、reset 或 force-push 已存在的目录或仓库。先检查现有内容，任何修改前都先问我。
+3. 如果我的仓库已经包含 SCHEMA.md、INDEX.md、scripts/ 和 skills/，直接克隆该仓库。
+4. 如果仓库为空或缺少本框架，从 https://github.com/kulebbb/open-long-term-memory.git 引导安装。保留框架、许可证、脚本、测试和 Agent Skills；只有我确认后才能删除虚构的 sample-* 和 example-* 数据。将我的 GitHub 地址设为 origin；创建聚焦的中文提交；只有我确认后才能 push。
+5. 在克隆目录运行：
+   git config core.hooksPath .githooks
+   python3 -m unittest discover -s tests -v
+   python3 scripts/build_memory_index.py --check
+   sh scripts/memory-sync.sh
+6. 在 Agent 平台使用的全局指令文件中追加以下幂等块，例如 ~/.codex/AGENTS.md、~/.claude/CLAUDE.md 或同类文件，以启用内置 Skills：
+
+   <!-- open-long-term-memory:begin -->
+   长期记忆：
+   - 召回持久事实前，读取 <绝对克隆路径>/skills/recall-long-term-memory/SKILL.md。
+   - 保存持久事实前，读取 <绝对克隆路径>/skills/write-long-term-memory/SKILL.md。
+   - 两类操作前都先运行 `sh <绝对克隆路径>/scripts/memory-sync.sh`。
+   <!-- open-long-term-memory:end -->
+
+   如果你的平台没有全局指令机制，打印这个块，并明确告诉我应该安装到哪里。
+7. 如果仓库是公开的，提醒我生成索引可能暴露个人数据，并在写入任何个人事实前帮我迁移到私有仓库。
+8. 安装完成后汇报：仓库 URL、本地路径、分支与 commit、测试和同步结果、hook 与 Skills 是否已启用，并让我提供一个召回测试。
+
+绝不输出秘密，绝不 force-push，绝不编造仓库地址。
+```
+
 ## 接入 Agent
 
 将本仓库作为独立克隆保存，并在 Agent 的全局指令中加入指向实际克隆路径的说明：

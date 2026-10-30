@@ -52,6 +52,46 @@ python3 scripts/build_memory_index.py --check
 
 The repository ships with a fictional `sample-app` dataset so every index page has useful content. Replace or remove the `example-*` records when starting your own memory store.
 
+## One-prompt agent setup
+
+Copy the entire block below into an agent that can use a terminal and edit files. If you do not include a repository URL, the agent must ask for it before installing or changing anything.
+
+```text
+You are installing and enabling Open Long-Term Memory on my computer.
+
+Before making changes, confirm that I supplied a GitHub repository URL. If I did not, stop and ask me for:
+- the full GitHub URL of my long-term-memory repository; real personal memory must use a private repository;
+- the local installation path (default: ~/open-long-term-memory).
+
+If I do not have a repository yet, guide me to create a new empty private GitHub repository and send you its URL. Use my existing Git or GitHub authentication; do not ask me to paste an access token into chat.
+
+Then complete the setup end to end:
+
+1. Check that git, python3 (3.9 or newer), and a POSIX-compatible sh are available.
+2. Never overwrite, delete, reset, or force-push an existing directory or repository. Inspect existing content and ask before modifying it.
+3. If my repository already contains SCHEMA.md, INDEX.md, scripts/, and skills/, clone it.
+4. If my repository is empty or lacks this framework, bootstrap it from https://github.com/kulebbb/open-long-term-memory.git. Preserve the framework, license, scripts, tests, and Agent Skills. Remove the fictional sample-* and example-* data only after I confirm. Set my GitHub URL as origin, create a focused commit, and push only after I confirm.
+5. In the clone, run:
+   git config core.hooksPath .githooks
+   python3 -m unittest discover -s tests -v
+   python3 scripts/build_memory_index.py --check
+   sh scripts/memory-sync.sh
+6. Enable the bundled skills by adding this idempotent block to the global instructions used by your agent platform, such as ~/.codex/AGENTS.md, ~/.claude/CLAUDE.md, or the equivalent:
+
+   <!-- open-long-term-memory:begin -->
+   Long-term memory:
+   - Before recalling durable facts, read <absolute-clone-path>/skills/recall-long-term-memory/SKILL.md.
+   - Before saving a durable fact, read <absolute-clone-path>/skills/write-long-term-memory/SKILL.md.
+   - Before either operation, run `sh <absolute-clone-path>/scripts/memory-sync.sh`.
+   <!-- open-long-term-memory:end -->
+
+   If your platform has no global instruction mechanism, print this block and tell me exactly where to install it.
+7. If the repository is public, warn me that generated indexes can expose personal data, and help me move the real memory store to a private repository before writing any personal fact.
+8. Finish by reporting the repository URL, local path, branch and commit, test and sync results, whether the hook and skills are enabled, and ask me for one recall test.
+
+Never print secrets, never force-push, and never invent a repository URL.
+```
+
 ## Connect an agent
 
 Keep this repository as a separate clone. Add a pointer in the agent's global instructions, using the actual local clone path:
