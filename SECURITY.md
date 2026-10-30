@@ -30,7 +30,8 @@ The public repository is configured with:
 - Dependabot vulnerability alerts and automated security fixes.
 - Private vulnerability reporting.
 - CodeQL default setup for GitHub Actions and Python.
-- A protected `main` branch requiring a pull request, one approval, resolved conversations, and a passing `verify` check.
+- A protected `main` branch requiring a pull request, code-owner approval, resolved conversations, and passing `verify` and `CodeQL` checks.
 - No force-push or branch deletion. Administrators retain an emergency bypass.
 - Read-only default `GITHUB_TOKEN` permissions.
 - GitHub-owned Actions only, pinned to full commit SHAs, with Dependabot updates.
+- Maintainer approval before Actions run for external contributors' pull requests.
